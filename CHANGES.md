@@ -42,6 +42,8 @@ v8.0.0 2022-07-27 Sydney
 - Expose `Dockerfile_distro.win10_docker_base_image` and
   `Dockerfile_distro.win10_base_tag` to get the Windows container base
   image and tags. (@MisterDA #63)
+- Support BuildKit 1.4 syntax of here-documents in `COPY` instructions. (@MisterDA #99)
+- Generate opam images using  BuildKit 1.4 syntax for Dockerfiles. (@MisterDA #99)
 
 v7.2.0 2021-07-28 Cambridge
 ---------------------------
