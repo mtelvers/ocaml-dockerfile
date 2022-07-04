@@ -156,7 +156,7 @@ val env : (string * string) list -> t
   instructions. This is functionally equivalent to prefixing a shell
   command with [<key>=<value>]. *)
 
-val add : ?chown:string -> ?from:string -> src:string list -> dst:string -> unit -> t
+val add : ?link:bool -> ?chown:string -> ?from:string -> src:string list -> dst:string -> unit -> t
 (** [add ?from ~src ~dst ()] copies new files, directories or remote file URLs
   from [src] and adds them to the filesystem of the container at the
   [dst] path.
@@ -177,15 +177,21 @@ val add : ?chown:string -> ?from:string -> src:string list -> dst:string -> unit
   determination of whether or not the file has changed and the cache
   should be updated.
 
-  The [?from] parameter allows artefacts to be retrieved from multiple
-  stages. It can either be an integer number (starting with 0 for the
-  first {!from} stage, or a named stage (supplied via [?alias] to the
-  {!from} command). *)
+  @param from Allows artefacts to be retrieved from multiple
+    stages. It can either be an integer number (starting with 0 for
+    the first {!from} stage, or a named stage (supplied via [?alias]
+    to the {!from} command).
 
-val copy : ?chown:string -> ?from:string -> src:string list -> dst:string -> unit -> t
+  @param link Copy files with enhanced semantics. Requires BuildKit
+    1.4 {{!val:parser_directive}syntax}. *)
+
+val copy : ?link:bool -> ?chown:string -> ?from:string -> src:string list -> dst:string -> unit -> t
 (** [copy ?from ~src ~dst ()] copies new files or directories from [src] and
   adds them to the filesystem of the container at the path [dst]. See
-  {!add} for more detailed documentation. *)
+  {!add} for more detailed documentation.
+
+  @param link Copy files with enhanced semantics. Requires BuildKit
+    1.4 {{!val:parser_directive}syntax}. *)
 
 val copy_heredoc : ?chown:string -> src:(heredoc list) -> dst:string -> unit -> t
 (** [copy_heredoc src dst] creates the file [dst] using the content of
