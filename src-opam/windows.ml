@@ -104,7 +104,7 @@ let install_visual_studio_build_tools ?(vs_version = "17") components =
 
 let header ~alias ?win10_revision
     ?(version =
-      (Distro.win10_latest_image : Distro.win10_release :> Distro.win_all)) () =
+      (Distro.win10_latest_image : Distro.win_all)) () =
   let img, tag = Distro.win10_base_tag ?win10_revision `Windows version in
   from ~alias ~tag img @@ user "ContainerAdministrator"
 

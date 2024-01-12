@@ -35,7 +35,8 @@ type win10_release =
   | `V2004
   | `V20H2
   | `V21H1
-  | `V21H2 ]
+  | `V21H2
+  | `V22H2 ]
 [@@deriving sexp]
 (** All Windows 10 release versions. *)
 
@@ -49,6 +50,8 @@ type win_all = [ win10_release | win10_ltsc ] [@@deriving sexp]
 
 type win10_lcu =
   [ `LCU
+  | `LCU20240109
+  | `LCU20231212
   | `LCU20231114
   | `LCU20231010
   | `LCU20230912
@@ -88,7 +91,7 @@ val win10_current_lcu : win10_lcu
 (** Current Windows 10 Latest Cumulative Update; value used when [`LCU] is
     specified. *)
 
-type win10_revision = win10_release * win10_lcu option [@@deriving sexp]
+type win10_revision = win_all * win10_lcu option [@@deriving sexp]
 (** A Windows 10 version optionally with an LCU. *)
 
 type distro =
@@ -166,8 +169,8 @@ type distro =
     | `V22_10
     | `V23_04
     | `V23_10 ]
-  | `Cygwin of win10_release
-  | `Windows of [ `Mingw | `Msvc ] * win10_release ]
+  | `Cygwin of win_all
+  | `Windows of [ `Mingw | `Msvc ] * win_all ]
 [@@deriving sexp]
 (** Supported Docker container distributions without aliases. *)
 
@@ -295,7 +298,7 @@ val latest_distros : t list
 val win10_latest_release : win10_release
 (** Latest Windows 10 release. *)
 
-val win10_latest_image : win10_release
+val win10_latest_image : win_all
 (** Latest Windows 10 Docker image available. May differ from
     {!win10_latest_release} if the Docker repository hasn't been
     updated. *)
@@ -381,7 +384,7 @@ val base_distro_tag :
     and other OCaml tool Dockerfiles. [arch] defaults to [x86_64] and can vary
     the base user/repository since some architecture are built elsewhere. *)
 
-val win10_release_to_string : win10_release -> string
+val win10_release_to_string : win_all -> string
 (** [win10_release_to_string update] converts a Windows 10 version name to
     string. *)
 
