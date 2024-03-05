@@ -194,21 +194,9 @@ type t =
     | `V24_04
     | `Latest
     | `LTS ]
-  | `Cygwin of
-    [ `Ltsc2016
-    | `Ltsc2019
-    | `Ltsc2022
-    | `Latest ]
-  | `Windows of
-    [ `Mingw
-    | `Msvc ] *
-    [ `Ltsc2019
-    | `Latest ]
-  | `WindowsServer of
-    [ `Mingw
-    | `Msvc ] *
-    [ `Ltsc2022
-    | `Latest ] ]
+  | `Cygwin of [ `Ltsc2016 | `Ltsc2019 | `Ltsc2022 | `Latest ]
+  | `Windows of [ `Mingw | `Msvc ] * [ `Ltsc2019 | `Latest ]
+  | `WindowsServer of [ `Mingw | `Msvc ] * [ `Ltsc2022 | `Latest ] ]
 [@@deriving sexp]
 
 type os_family = [ `Cygwin | `Linux | `Windows ] [@@deriving sexp]
@@ -375,6 +363,7 @@ let resolve_alias (d : t) : distro =
     | `Ubuntu
         ( `V12_04 | `V14_04 | `V15_04 | `V15_10 | `V16_04 | `V16_10 | `V17_04
         | `V17_10 | `V18_04 | `V18_10 | `V19_04 | `V19_10 | `V20_04 | `V20_10
+<<<<<<< HEAD
         | `V21_04 | `V21_10 | `V22_04 | `V22_10 | `V23_04 | `V23_10 | `V24_04 )
     | `Cygwin
         ( `Ltsc2016 | `Ltsc2019 | `Ltsc2022 )
@@ -384,6 +373,12 @@ let resolve_alias (d : t) : distro =
     | `WindowsServer
         ( _,
           ( `Ltsc2022 ) )) as d ->
+=======
+        | `V21_04 | `V21_10 | `V22_04 | `V22_10 | `V23_04 | `V23_10 )
+    | `Cygwin (`Ltsc2016 | `Ltsc2019 | `Ltsc2022)
+    | `Windows (_, `Ltsc2019)
+    | `WindowsServer (_, `Ltsc2022) ) as d ->
+>>>>>>> b1b0632 (Applied ocamlformat)
       d
 
 let distro_status (d : t) : status =
@@ -425,8 +420,8 @@ let distro_status (d : t) : status =
         | `V17_10 | `V18_04 | `V18_10 | `V19_04 | `V19_10 | `V20_10 | `V21_04
         | `V21_10 | `V22_10 ) ->
         `Deprecated
-    | `Cygwin ( `Ltsc2016 | `Ltsc2019 ) -> `Deprecated
-    | `Cygwin ( `Ltsc2022 ) -> `Active `Tier3
+    | `Cygwin (`Ltsc2016 | `Ltsc2019) -> `Deprecated
+    | `Cygwin `Ltsc2022 -> `Active `Tier3
     | `Windows (_, `Ltsc2019) -> `Active `Tier3
     | `WindowsServer (_, `Ltsc2022) -> `Active `Tier3
 
@@ -1195,16 +1190,10 @@ let base_distro_tag ?(arch = `X86_64) d =
       in
       ("mcr.microsoft.com/windows/servercore", tag)
   | `Windows v ->
-      let tag =
-        match v with
-        | _, `Ltsc2019 -> "ltsc2019"
-      in
+      let tag = match v with _, `Ltsc2019 -> "ltsc2019" in
       ("mcr.microsoft.com/windows", tag)
   | `WindowsServer v ->
-      let tag =
-        match v with
-        | _, `Ltsc2022 -> "ltsc2022"
-      in
+      let tag = match v with _, `Ltsc2022 -> "ltsc2022" in
       ("mcr.microsoft.com/windows/server", tag)
 
 let compare a b =
