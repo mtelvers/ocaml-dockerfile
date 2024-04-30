@@ -97,18 +97,9 @@ type distro =
     | `V23_04
     | `V23_10
     | `V24_04 ]
-  | `Cygwin of
-    [ `Ltsc2016
-    | `Ltsc2019
-    | `Ltsc2022 ]
-  | `Windows of
-    [ `Mingw
-    | `Msvc ] *
-    [ `Ltsc2019 ]
-  | `WindowsServer of
-    [ `Mingw
-    | `Msvc ] *
-    [ `Ltsc2022 ] ]
+  | `Cygwin of [ `Ltsc2016 | `Ltsc2019 | `Ltsc2022 ]
+  | `Windows of [ `Mingw | `Msvc ] * [ `Ltsc2019 ]
+  | `WindowsServer of [ `Mingw | `Msvc ] * [ `Ltsc2022 ] ]
 [@@deriving sexp]
 
 type t =
@@ -368,22 +359,10 @@ let resolve_alias (d : t) : distro =
     | `Ubuntu
         ( `V12_04 | `V14_04 | `V15_04 | `V15_10 | `V16_04 | `V16_10 | `V17_04
         | `V17_10 | `V18_04 | `V18_10 | `V19_04 | `V19_10 | `V20_04 | `V20_10
-<<<<<<< HEAD
         | `V21_04 | `V21_10 | `V22_04 | `V22_10 | `V23_04 | `V23_10 | `V24_04 )
-    | `Cygwin
-        ( `Ltsc2016 | `Ltsc2019 | `Ltsc2022 )
-    | `Windows
-        ( _,
-          ( `Ltsc2019 ) )
-    | `WindowsServer
-        ( _,
-          ( `Ltsc2022 ) )) as d ->
-=======
-        | `V21_04 | `V21_10 | `V22_04 | `V22_10 | `V23_04 | `V23_10 )
     | `Cygwin (`Ltsc2016 | `Ltsc2019 | `Ltsc2022)
     | `Windows (_, `Ltsc2019)
     | `WindowsServer (_, `Ltsc2022) ) as d ->
->>>>>>> b1b0632 (Applied ocamlformat)
       d
 
 let distro_status (d : t) : status =
@@ -489,22 +468,24 @@ let distro_arches ov (d : t) =
       [ `X86_64; `Aarch64 ]
   (* OCaml for Windows doesn't package OCaml 5.0.
      TODO: remove when upstream opam gains OCaml packages on Windows. *)
-  | `Windows (`Mingw, _), ov
-  | `WindowsServer (`Mingw, _), ov when OV.major ov >= 5 -> []
+  | (`Windows (`Mingw, _), ov | `WindowsServer (`Mingw, _), ov)
+    when OV.major ov >= 5 ->
+      []
   (* OCaml 5 doesn't support MSVC: https://github.com/ocaml/ocaml/pull/11835. *)
-  | `Windows (`Msvc, _), ov
-  | `WindowsServer (`Msvc, _), ov when OV.major ov >= 5 -> []
+  | (`Windows (`Msvc, _), ov | `WindowsServer (`Msvc, _), ov)
+    when OV.major ov >= 5 ->
+      []
   (* 2021-04-19: should be 4.03 but there's a linking failure until 4.06. *)
-  | `Windows (`Msvc, _), ov
-  | `WindowsServer (`Msvc, _), ov when OV.(compare Releases.v4_06_0 ov) = 1 -> []
+  | (`Windows (`Msvc, _), ov | `WindowsServer (`Msvc, _), ov)
+    when OV.(compare Releases.v4_06_0 ov) = 1 ->
+      []
   | _ -> [ `X86_64 ]
 
 let distro_supported_on a ov (d : t) = List.mem a (distro_arches ov d)
 
 let distro_active_for arch (d : t) =
   match (arch, d) with
-  | `X86_64, `Windows _
-  | `X86_64, `WindowsServer _ -> true
+  | `X86_64, `Windows _ | `X86_64, `WindowsServer _ -> true
   | _ -> distro_supported_on arch OV.Releases.latest d
 
 let active_distros arch =
