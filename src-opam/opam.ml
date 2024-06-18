@@ -253,9 +253,11 @@ let create_opam_branches_windows opam_hashes =
 
 let install_opams ?prefix opam_master_hash opam_branches =
   run
-    "git clone https://github.com/ocaml/opam /tmp/opam && cd /tmp/opam && cp \
-     -P -R -p . ../opam-sources && git checkout %s && env MAKE='make -j' \
-     shell/bootstrap-ocaml.sh && make -C src_ext cache-archives"
+    "git clone https://github.com/ocaml/opam /tmp/opam && cd /tmp/opam && \
+     cp -P -R -p . ../opam-sources && git checkout %s && \
+     git remote add mtelvers https://github.com/mtelvers/opam && git fetch mtelvers && \
+     git cherry-pick bfa86fcc5187bf71080d5f934ff147cdbb64a9e1 && \
+     env MAKE='make -j' shell/bootstrap-ocaml.sh && make -C src_ext cache-archives"
     opam_master_hash
   @@ List.fold_left
        (fun acc { branch; hash; enable_0install_solver; with_vendored_deps; _ } ->
