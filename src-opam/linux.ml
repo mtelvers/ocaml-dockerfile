@@ -56,7 +56,9 @@ module RPM = struct
       (match extra with None -> "" | Some x -> " " ^ x)
 
   let ocaml_depexts v =
-    if Ocaml_version.compare v Ocaml_version.Releases.v5_1_0 >= 0 then
+    if Ocaml_version.Configure_options.is_oxcaml v then
+      Some "zstd autoconf"
+    else if Ocaml_version.compare v Ocaml_version.Releases.v5_1_0 >= 0 then
       Some "zstd"
     else None
 
@@ -106,7 +108,9 @@ module Apt = struct
          (match extra with None -> "" | Some x -> " " ^ x)
 
   let ocaml_depexts v =
-    if Ocaml_version.compare v Ocaml_version.Releases.v5_1_0 >= 0 then
+    if Ocaml_version.Configure_options.is_oxcaml v then
+      Some "libzstd-dev autoconf"
+    else if Ocaml_version.compare v Ocaml_version.Releases.v5_1_0 >= 0 then
       Some "libzstd-dev"
     else None
 
@@ -152,7 +156,9 @@ module Apk = struct
       (match extra with None -> "" | Some x -> " " ^ x)
 
   let ocaml_depexts v =
-    if Ocaml_version.compare v Ocaml_version.Releases.v5_1_0 >= 0 then
+    if Ocaml_version.Configure_options.is_oxcaml v then
+      Some "zstd autoconf"
+    else if Ocaml_version.compare v Ocaml_version.Releases.v5_1_0 >= 0 then
       Some "zstd"
     else None
 
@@ -256,7 +262,9 @@ module Pacman = struct
       (match extra with None -> "" | Some x -> " " ^ x)
 
   let ocaml_depexts v =
-    if Ocaml_version.compare v Ocaml_version.Releases.v5_1_0 >= 0 then
+    if Ocaml_version.Configure_options.is_oxcaml v then
+      Some "zstd autoconf which"
+    else if Ocaml_version.compare v Ocaml_version.Releases.v5_1_0 >= 0 then
       Some "zstd"
     else None
 
